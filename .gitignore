@@ -1,16 +1,25 @@
-.env
-.env.example
-/.phpunit.cache
-/node_modules
-/public/build
-/public/hot
-/public/storage
-/storage/*.key
-/storage/pail
-/vendor
+# Environment Variable
 .env
 .env.backup
 .env.production
+
+# Libraries
+/node_modules
+/vendor
+
+# Build Files & Folders
+/public/build
+/public/hot
+/public/storage
+/public/css
+/public/js
+/public/images
+
+# Storage
+/storage
+
+# Miscellaneous
+/.phpunit.cache
 .phpactor.json
 .phpunit.result.cache
 Homestead.json
