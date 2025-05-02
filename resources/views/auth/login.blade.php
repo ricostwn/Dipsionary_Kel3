@@ -7,7 +7,6 @@
 </head>
 <body class="bg-[#f2ede3] min-h-screen flex items-center justify-center">
 
-    <!-- Bungkus utama -->
     <div class="relative w-[950px] h-[600px] bg-cover bg-center"
          style="background-image: url('{{ asset('images/book_frame.png') }}')">
 
@@ -17,7 +16,7 @@
         </div>
 
         <!-- Form Login di sisi kanan buku -->
-        <div class="absolute top-[20%] right-[5%] z-10 w-[300px]">
+        <div class="absolute top-[15%] right-[5%] z-10 w-[300px]">
 
             @if (session('status'))
                 <div class="mb-2 text-green-500 text-sm">
@@ -30,22 +29,27 @@
                     @csrf
 
                     <div class="mb-3">
-                        <label for="email" class="block text-sm text-black">e-mail</label>
+                        <label for="email" class="block text-sm text-black mt-4">e-mail</label>
                         <input id="email" type="email" name="email" value="{{ old('email') }}" required
-                               class="w-full p-1 text-black border-b border-black bg-transparent outline-none">
-                        @error('email') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                               class="w-full text-sm text-black border-0 border-b-2 border-[#5a5a5a] bg-transparent focus:ring-0 focus:outline-none">
+                        @error('email')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="mb-3">
-                        <label for="password" class="block text-sm text-black">Kata Sandi</label>
+                        <label for="password" class="block text-sm text-black mt-4">Kata Sandi</label>
                         <input id="password" type="password" name="password" required
-                               class="w-full p-1 text-black border-b border-black bg-transparent outline-none">
-                        @error('password') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                               class="w-full text-sm text-black border-0 border-b-2 border-[#5a5a5a] bg-transparent focus:ring-0 focus:outline-none">
+                        @error('password')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                 </form>
             </div>
 
-            <button type="submit" form="login" class="w-full bg-[#d2c291] hover:bg-[#C3b58e] text-black py-2 rounded-full absolute top-[130%]">
+            <button type="submit" form="login"
+                    class="w-full bg-[#d2c291] hover:bg-[#C3b58e] text-black py-2 rounded-full absolute top-[130%] right-[0%]">
                 Masuk
             </button>
         </div>
