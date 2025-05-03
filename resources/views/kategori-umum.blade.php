@@ -1,8 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="card">
-    <h1>Kategori Umum</h1>
-    <p>Welcome to the Kategori Umum page.</p>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Konten kategori umum -->
+
 </div>
 @endsection
