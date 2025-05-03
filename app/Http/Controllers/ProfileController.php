@@ -26,14 +26,19 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        // Mengisi data user dengan data yang sudah tervalidasi
+        $user->fill($request->validated());
+
+        // Jika ada perubahan pada email, reset email_verified_at
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        $user->save();
 
+        // Kembalikan ke halaman edit dengan status
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
@@ -42,19 +47,24 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        // Validasi password saat penghapusan akun
         $request->validateWithBag('userDeletion', [
             'password' => ['required', 'current_password'],
         ]);
 
         $user = $request->user();
 
+        // Logout pengguna sebelum menghapus akun
         Auth::logout();
 
+        // Hapus akun pengguna
         $user->delete();
 
+        // Hapus sesi dan token CSRF untuk keamanan
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
+        // Redirect ke halaman utama setelah penghapusan akun
         return Redirect::to('/');
     }
 }
