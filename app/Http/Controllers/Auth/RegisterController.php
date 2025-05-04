@@ -8,10 +8,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
-use App\Providers\RouteServiceProvider;
 
 class RegisterController extends Controller
 {
+    /**
+     * Lokasi redirect setelah registrasi.
+     *
+     * @var string
+     */
+    protected $redirectTo = '/email/verify';
+
     /**
      * Menampilkan form registrasi.
      *
@@ -47,7 +53,7 @@ class RegisterController extends Controller
         // Login otomatis setelah registrasi
         Auth::login($user);
 
-        // Redirect ke halaman setelah registrasi berhasil
-        return redirect(RouteServiceProvider::HOME);
+        // Redirect ke halaman verifikasi email
+        return redirect($this->redirectTo);
     }
 }
