@@ -18,6 +18,7 @@
     </style>
 </head>
 <body class="min-h-screen bg-[#F9F5EA]">
+
     <nav class="bg-[#3C3B6E] fixed w-full z-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
@@ -70,7 +71,6 @@
                                       d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                             </svg>
                         </button>
-
                         <div x-show="open" @click.away="open = false"
                              class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                             <div class="py-1">

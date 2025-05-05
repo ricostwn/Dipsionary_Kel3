@@ -21,9 +21,9 @@
                 ],
                 [
                     'id' => 2,
-                    'keyword' => 'IPS',
-                    'pronunciation' => '/i-pe-es/',
-                    'definition' => 'Tingkat keberhasilan mahasiswa...',
+                    'keyword' => 'SIAP UNDIP',
+                    'pronunciation' => '/si-yap un-dip/',
+                    'definition' => 'Sistem Informasi Akademik yang digunakan mahasiswa buat KRS-an, lihat nilai, dan lainnya.',
                     'is_bookmarked' => true,
                     'sub_items' => []
                 ],
@@ -31,7 +31,7 @@
                     'id' => 3,
                     'keyword' => 'KTM',
                     'pronunciation' => '/ka-te-em/',
-                    'definition' => 'Kegiatan kurikuler di masyarakat',
+                    'definition' => 'Kartu Tanda Mahasiswa (KTM) adalah kartu identitas resmi yang diberikan kepada mahasiswa oleh perguruan tinggi tempat mereka terdaftar, yang berfungsi sebagai bukti status sebagai mahasiswa aktif.',
                     'is_bookmarked' => false,
                     'sub_items' => [
 ]
@@ -50,16 +50,31 @@
         </div>
     @else
     @if($isEmpty)
-        <div class="text-center mt-12">
+    <div class="flex justify-center items-center h-screen">
+        <div class="text-center">
             <img src="{{ asset('images/history_kosong.png') }}" alt="Empty bookmark" class="mx-auto w-48 mb-4">
             <p class="text-[#6B7280] text-lg">Kamu belum menyimpan istilah favorit!</p>
         </div>
-     @else
-     <div class="space-y-8 px-4 pt-20"> <!-- Tambahkan pt-20 -->
-        <h1 class="text-2xl font-bold mb-6 text-[#3C3B6E]">Markah</h1>
+    </div>
+    @else
+     <div class="space-y-8 px-4 pt-20">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-[#3C3B6E]">Markah</h1>
+            <button
+                onclick="confirm('Yakin ingin menghapus semua markah?') && document.getElementById('delete-all-form').submit()"
+                class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+            >
+                Hapus Semua
+            </button>
+            <form id="delete-all-form" method="POST" action="{{ route('history.delete-all') }}" class="hidden">
+                @csrf
+                @method('DELETE')
+            </form>
+        </div>
                 @foreach($dummyBookmark as $group)
                 <div class="bg-[#C5B862] rounded-lg shadow-sm p-6 border border-[#F9F5EA] w-full">
                         @foreach($group['items'] as $item)
+                            @if($item['is_bookmarked'])
                             <div
                                 x-data="{ open: false, isBookmarked: {{ json_encode($item['is_bookmarked']) }} }"
                                 class="mb-6 last:mb-0 group"
@@ -124,6 +139,7 @@
                                     <hr class="my-4 border-[#E5E7EB]">
                                 @endif
                             </div>
+                            @endif
                         @endforeach
                     </div>
                 @endforeach

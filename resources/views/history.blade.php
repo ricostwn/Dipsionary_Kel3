@@ -55,11 +55,13 @@
         </div>
     @else
     @if($isEmpty)
-        <div class="text-center mt-12">
-            <img src="{{ asset('images/history_kosong.png') }}" alt="Empty history" class="mx-auto w-48 mb-4">
-            <p class="text-[#6B7280] text-lg">Kamu belum melakukan pencarian!</p>
+    <div class="flex justify-center items-center h-screen">
+        <div class="text-center">
+            <img src="{{ asset('images/history_kosong.png') }}" alt="Empty bookmark" class="mx-auto w-48 mb-4">
+            <p class="text-[#6B7280] text-lg">Kamu belum menyimpan istilah favorit!</p>
         </div>
-     @else
+    </div>
+    @else
      <div class="space-y-8 px-4 pt-20">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold text-[#3C3B6E]">Riwayat</h1>
