@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {{-- resources/views/kategori-dips.blade.php --}}
 @extends('layouts.app')
 
@@ -114,5 +115,30 @@
                     </div>
                 @endforeach
             </div>
+=======
+@extends('layouts.app')
+
+@section('content')
+<div class="container mx-auto py-8 max-w-5xl">
+    <h1 class="text-3xl font-bold mb-6 text-green-700">Kategori DIPS</h1>
+
+    <p>Jumlah item: {{ count($items) }}</p>
+
+    @if($items->isEmpty())
+        <div class="bg-yellow-100 text-yellow-800 p-4 rounded">
+            Tidak ada istilah dalam kategori ini.
+        </div>
+    @else
+        <ul class="space-y-4">
+            @foreach($items as $item)
+                <li class="bg-white p-4 rounded shadow border">
+                    <h2 class="text-xl font-semibold text-gray-800">{{ $item->istilah }}</h2>
+                    <p class="text-gray-600 italic">{{ $item->cara_baca }}</p>
+                    <p class="mt-2 text-gray-700">{{ $item->penjelasan }}</p>
+                </li>
+            @endforeach
+        </ul>
+    @endif
+>>>>>>> 787b004 (routing, database, controller, model, dll)
 </div>
 @endsection

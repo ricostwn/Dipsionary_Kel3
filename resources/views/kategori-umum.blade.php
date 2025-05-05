@@ -2,6 +2,7 @@
 @extends('layouts.app')
 
 @section('content')
+<<<<<<< HEAD
 @php
     // Variabel testing
     // Dummy data lengkap
@@ -116,5 +117,32 @@
                     </div>
                 @endforeach
             </div>
+=======
+<div class="container mx-auto py-8 max-w-5xl">
+    <h1 class="text-3xl font-bold mb-6 text-blue-700">Kategori Umum</h1>
+
+    <!-- Tampilkan jumlah item -->
+    <p>Jumlah item: {{ count($items) }}</p>
+
+    <!-- Jika data kosong -->
+    @if($items->isEmpty())
+        <div class="bg-yellow-100 text-yellow-800 p-4 rounded">
+            Tidak ada istilah dalam kategori ini.
+        </div>
+    @else
+        <ul class="space-y-4">
+            <!-- Iterasi untuk menampilkan setiap item -->
+            @foreach($items as $item)
+                <li class="bg-white p-4 rounded shadow border">
+                    <h2 class="text-xl font-semibold text-gray-800">{{ $item->istilah }}</h2>
+                    <p class="text-gray-600 italic">{{ $item->cara_baca }}</p>
+                    <p class="mt-2 text-gray-700">{{ $item->penjelasan }}</p>
+                    <!-- Tampilkan kategori untuk verifikasi -->
+                    <p class="mt-2 text-gray-700"><strong>Category:</strong> {{ $item->kategori }}</p>
+                </li>
+            @endforeach
+        </ul>
+    @endif
+>>>>>>> 787b004 (routing, database, controller, model, dll)
 </div>
 @endsection

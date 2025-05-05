@@ -51,8 +51,25 @@
 
         <!-- Page Content -->
         <main>
-            {{ $slot }}
+            @yield('content')
         </main>
     </div>
+
+    <!-- Login Alert Script -->
+    <script>
+        function showLoginAlert() {
+            Swal.fire({
+                title: 'Login Dulu!',
+                text: 'Fitur ini hanya bisa digunakan jika kamu sudah login.',
+                icon: 'warning',
+                confirmButtonText: 'Login Sekarang',
+                confirmButtonColor: '#3C3B6E'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{{ route('login') }}";
+                }
+            });
+        }
+    </script>
 </body>
 </html>
