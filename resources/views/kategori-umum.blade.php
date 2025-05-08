@@ -1,148 +1,29 @@
-{{-- resources/views/kategori-umum.blade.php --}}
 @extends('layouts.app')
 
 @section('content')
-<<<<<<< HEAD
-@php
-    // Variabel testing
-    // Dummy data lengkap
-    $dummyKategoriUmum = [
-        [
-            'items' => [
-                [
-                    'id' => 1,
-                    'keyword' => 'Mata kuliah (Matkul)',
-                    'pronunciation' => '/ma-ta ku-li-ah mat-kul/',
-                    'definition' => 'Mata kuliah (matkul) adalah satuan pelajaran yang diajarkan dan dipelajari oleh mahasiswa di tingkat perguruan tinggi yang disusun berdasarkan capaian pembelajaran lulusan (CPL) yang dibebankan padanya, berisi materi pembelajaran, bentuk dan metoda pembelajaran, penilaian, serta memiliki bobot minimal satu satuan kredit semester (SKS).',
-                    'is_bookmarked' => false,
-                    'sub_items' => []
-                ],
-                [
-                    'id' => 2,
-                    'keyword' => 'Satuan Kredit Semester (SKS)',
-                    'pronunciation' => '/sa-tu-an kre-dit se-mes-ter es-ka-es/',
-                    'definition' => 'Satuan Kredit Semester (SKS) adalah satuan yang digunakan untuk menyatakan beban studi mahasiswa, yang mencakup waktu kegiatan belajar seperti kuliah, praktikum, dan tugas.',
-                    'is_bookmarked' => false,
-                    'sub_items' => []
-                ],
-                [
-                    'id' => 3,
-                    'keyword' => 'Kartu Tanda Mahasiswa (KTM)',
-                    'pronunciation' => '/ka-te-em/',
-                    'definition' => 'Kartu Tanda Mahasiswa (KTM) adalah kartu identitas resmi yang diberikan kepada mahasiswa oleh perguruan tinggi tempat mereka terdaftar, yang berfungsi sebagai bukti status sebagai mahasiswa aktif.',
-                    'is_bookmarked' => true,
-                    'sub_items' => [
-]
-                ]
-            ]
-        ]
-    ];
-@endphp
+<div class="container mx-auto py-10 max-w-5xl pt-24">
+    <h1 class="text-3xl font-bold mb-6 text-[#3C3B6E]">Kategori Umum</h1>
 
-<div class="container mx-auto px-4 py-8 max-w-7xl">
-     <div class="space-y-8 px-4 pt-20">
-        <h1 class="text-2xl font-bold mb-6 text-[#3C3B6E]">Kategori Umum</h1>
-        <p class="font-medium text-lg text-[#000000] mb-4">
-            Berikut adalah istilah-istilah yang sering digunakan di berbagai universitas.
-        </p>
-                {{-- Dummy data --}}
-                @foreach($dummyKategoriUmum as $group)
-                <div class="bg-[#C5B862] rounded-lg shadow-sm p-6 border border-[#F9F5EA] w-full">
-                        @foreach($group['items'] as $item)
-                            <div
-                                x-data="{ open: false, isBookmarked: {{ json_encode($item['is_bookmarked']) }} }"
-                                class="mb-6 last:mb-0 group"
-                            >
-                                <div class="flex items-center justify-between">
-                                    <button @click="open = !open" class="flex-1 text-left group">
-                                        <div class="flex items-baseline justify-between">
-                                            <div class="flex items-baseline">
-                                                <h3 class="text-lg font-medium text-[#FFFFFF] group-hover:text-[#3C3B6E] transition-colors">
-                                                    {{ $item['keyword'] }}
-                                                </h3>
-                                                <span class="ml-2 text-sm text-[#FFFFFF]">{{ $item['pronunciation'] }}</span>
-                                            </div>
-                                            {{-- Icon Dropdown --}}
-                                            <svg class="w-5 h-5 text-[#6B7280] transform transition-transform duration-200"
-                                                :class="{ 'rotate-180': open }"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                                            </svg>
-                                        </div>
-                                    </button>
+    <p class="text-[#535049] mb-4">Jumlah item: {{ count($items) }}</p>
 
-                                    {{-- Bookmark Button --}}
-                                    <button
-                                        @click="isBookmarked = !isBookmarked; if (isBookmarked) window.location.href = '/bookmark';"
-                                        class="ml-4 p-2 hover:bg-[#F3F4F6] rounded-full transition-colors"
-                                        :class="{ 'text-[#3C3B6E]': isBookmarked, 'text-[#9CA3AF]': !isBookmarked }"
-                                    >
-                                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
-                                        </svg>
-                                    </button>
-                                </div>
-
-                                {{-- Dropdown Content --}}
-                                <div x-show="open" x-collapse class="mt-2 pl-2">
-                                    @if(!empty($item['sub_items']))
-                                        <ul class="space-y-4">
-                                            @foreach($item['sub_items'] as $sub)
-                                                <li class="pl-4">
-                                                    <div class="flex items-baseline">
-                                                        <h4 class="font-medium text-[#1F2937]">{{ $sub['keyword'] }}</h4>
-                                                        <span class="ml-2 text-sm text-[#6B7280]">{{ $sub['pronunciation'] }}</span>
-                                                    </div>
-                                                    <div class="mt-1 bg-[#F9F5EA] border border-[#E5E7EB] rounded-md p-3 text-[#4B5563]">
-                                                        {{ $sub['definition'] }}
-                                                      </div>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    @else
-                                    <div class="bg-[#F9F5EA] border border-[#E5E7EB] rounded-md p-3 text-[#4B5563]">
-                                        {{ $item['definition'] }}
-                                      </div>
-
-                                    @endif
-                                </div>
-
-                                @if(!$loop->last)
-                                    <hr class="my-4 border-[#E5E7EB]">
-                                @endif
-                            </div>
-                        @endforeach
-                    </div>
-                @endforeach
-            </div>
-=======
-<div class="container mx-auto py-8 max-w-5xl">
-    <h1 class="text-3xl font-bold mb-6 text-blue-700">Kategori Umum</h1>
-
-    <!-- Tampilkan jumlah item -->
-    <p>Jumlah item: {{ count($items) }}</p>
-
-    <!-- Jika data kosong -->
-    @if($items->isEmpty())
-        <div class="bg-yellow-100 text-yellow-800 p-4 rounded">
+    @if(isset($message))
+        <div class="bg-yellow-100 text-yellow-800 p-4 rounded-lg">
+            {{ $message }}
+        </div>
+    @elseif($items->isEmpty())
+        <div class="bg-yellow-100 text-yellow-800 p-4 rounded-lg">
             Tidak ada istilah dalam kategori ini.
         </div>
     @else
         <ul class="space-y-4">
-            <!-- Iterasi untuk menampilkan setiap item -->
             @foreach($items as $item)
-                <li class="bg-white p-4 rounded shadow border">
-                    <h2 class="text-xl font-semibold text-gray-800">{{ $item->istilah }}</h2>
-                    <p class="text-gray-600 italic">{{ $item->cara_baca }}</p>
-                    <p class="mt-2 text-gray-700">{{ $item->penjelasan }}</p>
-                    <!-- Tampilkan kategori untuk verifikasi -->
-                    <p class="mt-2 text-gray-700"><strong>Category:</strong> {{ $item->kategori }}</p>
+                <li class="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition">
+                    <h2 class="text-xl font-semibold text-[#3C3B6E]">{{ $item->istilah }}</h2>
+                    <p class="text-gray-600 italic mt-1">{{ $item->cara_baca }}</p>
+                    <p class="mt-3 text-gray-700">{{ $item->penjelasan }}</p>
                 </li>
             @endforeach
         </ul>
     @endif
->>>>>>> 787b004 (routing, database, controller, model, dll)
 </div>
 @endsection
