@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Validation\ValidationException;
 
 class RegisterController extends Controller
@@ -49,6 +50,9 @@ class RegisterController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
+
+        // Panggil event Registered agar email verifikasi dikirim otomatis
+        event(new Registered($user));
 
         // Login otomatis setelah registrasi
         Auth::login($user);
