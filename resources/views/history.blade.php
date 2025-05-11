@@ -51,7 +51,7 @@
     @if(!$isLoggedIn)
         <div class="text-center mt-12">
             <img src="{{ asset('images/history_kosong.png') }}" alt="Login required" class="mx-auto w-48 mb-4">
-            <p class="text-[#6B7280] text-lg">Silakan login untuk melihat riwayat</p>
+            <p class="text-[#6B7280] text-lg">Silakan login untuk melihat riwayat!</p>
         </div>
     @else
     @if($isEmpty)

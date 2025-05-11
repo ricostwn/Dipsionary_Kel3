@@ -1,11 +1,15 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
+    <div class="flex justify-center my-6 mb-6">
+        <img src="{{ asset('images/logo.png') }}" alt="Dipsionary Logo" class="w-32 h-auto">
+    </div>
+
+    <div class="mb-6 text-sm text-gray-600">
+        {{ __('Terima kasih sudah mendaftar! Sebelum mulai, yuk cek email kamu dan klik link verifikasi yang kami kirim. Belum dapat emailnya? Tenang, kami bisa kirim ulang kok!') }}
     </div>
 
     @if (session('status') == 'verification-link-sent')
         <div class="mb-4 font-medium text-sm text-green-600">
-            {{ __('A new verification link has been sent to the email address you provided during registration.') }}
+            {{ __('Link verifikasi baru sudah kami kirim ke email yang kamu pakai saat mendaftar.') }}
         </div>
     @endif
 
@@ -15,7 +19,7 @@
 
             <div>
                 <x-primary-button>
-                    {{ __('Resend Verification Email') }}
+                    {{ __('Kirim Ulang Email Verifikasi') }}
                 </x-primary-button>
             </div>
         </form>

@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mx-auto py-10 max-w-5xl pt-24">
-    <h1 class="text-3xl font-bold mb-6 text-[#3C3B6E]">Kategori DIPS</h1>
+    <h1 class="text-3xl font-bold mb-6 text-[#3C3B6E]">Kategori Dips</h1>
 
     <p class="text-[#535049] mb-4">Jumlah item: {{ count($items) }}</p>
 

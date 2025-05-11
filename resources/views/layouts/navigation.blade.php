@@ -4,22 +4,25 @@
         <div class="flex items-center justify-between h-16">
             <!-- Logo -->
             <div>
-                <a href="/" class="flex items-center">
-                    <img class="h-10" src="{{ asset('images/logo.png') }}" alt="Dipsionary Logo">
+                <a href="/" class="flex">
+                    <img class="h-10" src="{{ asset('images/logo_dipsionary.png') }}" alt="Dipsionary Logo">
                 </a>
             </div>
 
-            <form action="{{ route('search') }}" method="GET" class="relative h-10 w-full">
-                <div class="absolute inset-y-0 left-0 flex items-center pl-3">
-                    <svg class="w-5 h-5 text-[#414140]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </div>
-                <input type="text" name="q" placeholder="Mau cari apa dips?"
-                    class="w-full h-full pl-10 pr-4 rounded-lg bg-[#F9F5EA] text-[#414140] focus:ring-2 focus:ring-[#3C3B6E]">
-            </form>
-            
+            <!-- Search -->
+            <div class="flex-grow max-w-3xl w-full">
+                <form action="{{ route('search') }}" method="GET" class="relative h-10">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                        <svg class="w-5 h-5 text-[#414140]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                    <input type="text" name="q" placeholder="Mau cari apa dips?"
+                        class="w-full h-full pl-10 pr-4 rounded-lg bg-[#F9F5EA] text-[#414140] focus:ring-2 focus:ring-[#3C3B6E]">
+                </form>
+            </div>
+
             <!-- Icons -->
             <div class="flex items-center space-x-6">
                 <!-- History -->
@@ -42,7 +45,8 @@
 
                 <!-- Profile -->
                 <div x-data="{ open: false }" class="relative">
-                    <button @click="open = !open" class="text-[#F9F5EA] hover:text-gray-300">
+                    <button @click="open = !open" class="text-[#F9F5EA] hover:text-white-300 flex items-center justify-center h-10 w-10">
+
                         <svg class="h-8 w-8" fill="#F9F5EA" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
