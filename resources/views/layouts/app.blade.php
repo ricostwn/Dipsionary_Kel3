@@ -1,15 +1,29 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <meta charset="UTF-8">
-    <title>Dipsionary</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>{{ config('app.name', 'Dipsionary') }}</title>
+
+    <!-- Tailwind & Alpine -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Fonts -->
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Karla:wght@400;600&display=swap');
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+            font-family: 'Karla', sans-serif;
         }
+    </style>
+
+    <!-- Custom Style -->
+    <style>
         .card {
             background: #f8f9fa;
             border-radius: 8px;
@@ -17,8 +31,45 @@
             margin: 10px 0;
         }
     </style>
+
+    <!-- Scripts -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
-    @yield('content')
+
+<body class="min-h-screen bg-[#F9F5EA]">
+    <div class="min-h-screen bg-[#F9F5EA]">
+        @include('layouts.navigation')
+
+        <!-- Page Heading -->
+        @isset($header)
+            <header class="bg-white shadow">
+                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                    {{ $header }}
+                </div>
+            </header>
+        @endisset
+
+        <!-- Page Content -->
+        <main>
+            @yield('content')
+        </main>
+    </div>
+
+    <!-- Login Alert Script -->
+    <script>
+        function showLoginAlert() {
+            Swal.fire({
+                title: 'Login Dulu!',
+                text: 'Fitur ini hanya bisa digunakan jika kamu sudah login.',
+                icon: 'warning',
+                confirmButtonText: 'Login Sekarang',
+                confirmButtonColor: '#3C3B6E'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{{ route('login') }}";
+                }
+            });
+        }
+    </script>
 </body>
 </html>
