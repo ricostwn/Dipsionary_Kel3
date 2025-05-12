@@ -1,9 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto px-4 py-8 max-w-7xl">
+<div class="container mx-auto px-4 py-20 max-w-4xl">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-[#3C3B6E]">Markah</h1>
+        @unless($bookmarks->isEmpty())
         <form method="POST" action="{{ route('bookmark.delete-all') }}">
             @csrf
             @method('DELETE')
@@ -11,6 +12,7 @@
                 Hapus Semua
             </button>
         </form>
+        @endunless
     </div>
 
     @if($bookmarks->isEmpty())
