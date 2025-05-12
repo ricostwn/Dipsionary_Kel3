@@ -1,150 +1,31 @@
-{{-- resources/views/bookmark.blade.php --}}
 @extends('layouts.app')
 
 @section('content')
-@php
-    // Variabel testing
-    $isLoggedIn = true;
-    $isEmpty = false;
-
-    // Dummy data lengkap
-    $dummyBookmark = [
-        [
-            'items' => [
-                [
-                    'id' => 1,
-                    'keyword' => 'Dipyo',
-                    'pronunciation' => '/dip-yo/',
-                    'definition' => 'Bis Universitas Diponegoro yang disediakan oleh kampus untuk mahasiswa.',
-                    'is_bookmarked' => false,
-                    'sub_items' => []
-                ],
-                [
-                    'id' => 2,
-                    'keyword' => 'SIAP UNDIP',
-                    'pronunciation' => '/si-yap un-dip/',
-                    'definition' => 'Sistem Informasi Akademik yang digunakan mahasiswa buat KRS-an, lihat nilai, dan lainnya.',
-                    'is_bookmarked' => true,
-                    'sub_items' => []
-                ],
-                [
-                    'id' => 3,
-                    'keyword' => 'KTM',
-                    'pronunciation' => '/ka-te-em/',
-                    'definition' => 'Kartu Tanda Mahasiswa (KTM) adalah kartu identitas resmi yang diberikan kepada mahasiswa oleh perguruan tinggi tempat mereka terdaftar, yang berfungsi sebagai bukti status sebagai mahasiswa aktif.',
-                    'is_bookmarked' => false,
-                    'sub_items' => [
-]
-                ]
-            ]
-        ]
-    ];
-@endphp
-
 <div class="container mx-auto px-4 py-8 max-w-7xl">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-[#3C3B6E]">Markah</h1>
+        <form method="POST" action="{{ route('bookmark.delete-all') }}">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+                Hapus Semua
+            </button>
+        </form>
+    </div>
 
-    @if(!$isLoggedIn)
+    @if($bookmarks->isEmpty())
         <div class="text-center mt-12">
-            <img src="{{ asset('images/history_kosong.png') }}" alt="Login required" class="mx-auto w-48 mb-4">
-            <p class="text-[#6B7280] text-lg">Silakan login untuk melihat riwayat</p>
-        </div>
-    @else
-    @if($isEmpty)
-    <div class="flex justify-center items-center h-screen">
-        <div class="text-center">
             <img src="{{ asset('images/history_kosong.png') }}" alt="Empty bookmark" class="mx-auto w-48 mb-4">
             <p class="text-[#6B7280] text-lg">Kamu belum menyimpan istilah favorit!</p>
         </div>
-    </div>
     @else
-     <div class="space-y-8 px-4 pt-20">
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold text-[#3C3B6E]">Markah</h1>
-            <button
-                onclick="confirm('Yakin ingin menghapus semua markah?') && document.getElementById('delete-all-form').submit()"
-                class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-            >
-                Hapus Semua
-            </button>
-            <form id="delete-all-form" method="POST" action="{{ route('history.delete-all') }}" class="hidden">
-                @csrf
-                @method('DELETE')
-            </form>
-        </div>
-                @foreach($dummyBookmark as $group)
-                <div class="bg-[#C5B862] rounded-lg shadow-sm p-6 border border-[#F9F5EA] w-full">
-                        @foreach($group['items'] as $item)
-                            @if($item['is_bookmarked'])
-                            <div
-                                x-data="{ open: false, isBookmarked: {{ json_encode($item['is_bookmarked']) }} }"
-                                class="mb-6 last:mb-0 group"
-                            >
-                                <div class="flex items-center justify-between">
-                                    <button @click="open = !open" class="flex-1 text-left group">
-                                        <div class="flex items-baseline justify-between">
-                                            <div class="flex items-baseline">
-                                                <h3 class="text-lg font-medium text-[#FFFFFF] group-hover:text-[#3C3B6E] transition-colors">
-                                                    {{ $item['keyword'] }}
-                                                </h3>
-                                                <span class="ml-2 text-sm text-[#FFFFFF]">{{ $item['pronunciation'] }}</span>
-                                            </div>
-                                            {{-- Icon Dropdown --}}
-                                            <svg class="w-5 h-5 text-[#6B7280] transform transition-transform duration-200"
-                                                :class="{ 'rotate-180': open }"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                                            </svg>
-                                        </div>
-                                    </button>
-
-                                    {{-- Bookmark Button --}}
-                                    <button
-                                        @click="isBookmarked = !isBookmarked"
-                                        class="ml-4 p-2 hover:bg-[#F3F4F6] rounded-full transition-colors"
-                                        :class="{ 'text-[#3C3B6E]': isBookmarked, 'text-[#9CA3AF]': !isBookmarked }"
-                                    >
-                                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
-                                        </svg>
-                                    </button>
-                                </div>
-
-                                {{-- Dropdown Content --}}
-                                <div x-show="open" x-collapse class="mt-2 pl-2">
-                                    @if(!empty($item['sub_items']))
-                                        <ul class="space-y-4">
-                                            @foreach($item['sub_items'] as $sub)
-                                                <li class="pl-4">
-                                                    <div class="flex items-baseline">
-                                                        <h4 class="font-medium text-[#1F2937]">{{ $sub['keyword'] }}</h4>
-                                                        <span class="ml-2 text-sm text-[#6B7280]">{{ $sub['pronunciation'] }}</span>
-                                                    </div>
-                                                    <div class="mt-1 bg-[#F9F5EA] border border-[#E5E7EB] rounded-md p-3 text-[#4B5563]">
-                                                        {{ $sub['definition'] }}
-                                                      </div>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    @else
-                                    <div class="bg-[#F9F5EA] border border-[#E5E7EB] rounded-md p-3 text-[#4B5563]">
-                                        {{ $item['definition'] }}
-                                      </div>
-
-                                    @endif
-                                </div>
-
-                                @if(!$loop->last)
-                                    <hr class="my-4 border-[#E5E7EB]">
-                                @endif
-                            </div>
-                            @endif
-                        @endforeach
-                    </div>
-                @endforeach
+        @foreach($bookmarks as $item)
+            <div class="p-4 mb-4 bg-[#C5B862] rounded-lg">
+                <h2 class="text-xl font-semibold">{{ $item->istilah }}</h2>
+                <p class="italic">{{ $item->cara_baca }}</p>
+                <p>{{ $item->penjelasan }}</p>
             </div>
-        @endif
+        @endforeach
     @endif
 </div>
 @endsection

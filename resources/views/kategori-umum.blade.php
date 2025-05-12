@@ -21,6 +21,15 @@
                     <h2 class="text-xl font-semibold text-[#3C3B6E]">{{ $item->istilah }}</h2>
                     <p class="text-gray-600 italic mt-1">{{ $item->cara_baca }}</p>
                     <p class="mt-3 text-gray-700">{{ $item->penjelasan }}</p>
+                    <button 
+                        type="button"
+                        class="bookmark-button mt-4 px-4 py-1 bg-blue-600 text-white rounded"
+                        data-istilah="{{ $item->istilah }}"
+                        data-cara_baca="{{ $item->cara_baca }}"
+                        data-penjelasan="{{ $item->penjelasan }}"
+                    >
+                        Bookmark
+                    </button>
                 </li>
             @endforeach
         </ul>

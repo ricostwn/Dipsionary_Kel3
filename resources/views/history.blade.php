@@ -1,161 +1,38 @@
-{{-- resources/views/history.blade.php --}}
 @extends('layouts.app')
 
 @section('content')
-@php
-    // Variabel testing
-    $isLoggedIn = true;
-    $isEmpty = false;
-
-    // Dummy data lengkap
-    $dummyHistory = [
-        [
-            'date' => now()->format('Y-m-d'),
-            'items' => [
-                [
-                    'id' => 1,
-                    'keyword' => 'Dipyo',
-                    'pronunciation' => '/dip-yo/',
-                    'definition' => 'Bis Universitas Diponegoro yang disediakan oleh kampus untuk mahasiswa.',
-                    'is_bookmarked' => false,
-                    'sub_items' => []
-                ]
-            ]
-        ],
-        [
-            'date' => now()->subDay()->format('Y-m-d'),
-            'items' => [
-                [
-                    'id' => 2,
-                    'keyword' => 'IPS',
-                    'pronunciation' => '/i-pe-es/',
-                    'definition' => 'Tingkat keberhasilan mahasiswa...',
-                    'is_bookmarked' => true,
-                    'sub_items' => []
-                ],
-                [
-                    'id' => 3,
-                    'keyword' => 'KTM',
-                    'pronunciation' => '/ka-te-em/',
-                    'definition' => 'Kegiatan kurikuler di masyarakat',
-                    'is_bookmarked' => false,
-                    'sub_items' => []
-                ]
-            ]
-        ]
-    ];
-@endphp
-
 <div class="container mx-auto px-4 py-8 max-w-5xl">
+    <h1 class="text-3xl font-bold mb-6 text-[#3C3B6E]">Riwayat Pencarian</h1>
 
-    @if(!$isLoggedIn)
-        <div class="text-center mt-12">
-            <img src="{{ asset('images/history_kosong.png') }}" alt="Login required" class="mx-auto w-48 mb-4">
-            <p class="text-[#6B7280] text-lg">Silakan login untuk melihat riwayat!</p>
+    @if($histories->isEmpty())
+        <div class="bg-yellow-100 text-yellow-800 p-4 rounded-lg">
+            Tidak ada riwayat pencarian.
         </div>
     @else
-    @if($isEmpty)
-    <div class="flex justify-center items-center h-screen">
-        <div class="text-center">
-            <img src="{{ asset('images/history_kosong.png') }}" alt="Empty bookmark" class="mx-auto w-48 mb-4">
-            <p class="text-[#6B7280] text-lg">Kamu belum menyimpan istilah favorit!</p>
-        </div>
-    </div>
-    @else
-     <div class="space-y-8 px-4 pt-20">
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold text-[#3C3B6E]">Riwayat</h1>
-            <button
-                onclick="confirm('Yakin ingin menghapus semua riwayat?') && document.getElementById('delete-all-form').submit()"
-                class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-            >
-                Hapus Semua
+        <ul class="space-y-4">
+            @foreach($histories as $history)
+                <li class="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition">
+                    <h2 class="text-xl font-semibold text-[#3C3B6E]">{{ $history->keyword }}</h2>
+                    <p class="mt-3 text-gray-700">Pencarian dilakukan pada: {{ $history->created_at->format('d-m-Y H:i') }}</p>
+
+                    <form method="POST" action="{{ route('history.delete', $history->id) }}">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="text-red-500 hover:bg-red-50 rounded-full transition-colors mt-4">
+                            Hapus Riwayat
+                        </button>
+                    </form>
+                </li>
+            @endforeach
+        </ul>
+
+        <form method="POST" action="{{ route('history.delete-all') }}" class="mt-6">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+                Hapus Semua Riwayat
             </button>
-            <form id="delete-all-form" method="POST" action="{{ route('history.delete-all') }}" class="hidden">
-                @csrf
-                @method('DELETE')
-            </form>
-        </div>
-
-                @foreach($dummyHistory as $group)
-                <h2 class="font-semibold text-lg mb-4 text-[#3C3B6E]">
-                    {{ \Carbon\Carbon::parse($group['date'])->locale('id')->isoFormat('dddd, D MMMM YYYY') }}
-                </h2>
-                <div class="bg-[#C5B862] rounded-lg shadow-sm p-6 border border-[#F9F5EA] w-full">
-                        @foreach($group['items'] as $item)
-                            <div
-                                x-data="{ open: false }"
-                                class="mb-6 last:mb-0 group"
-                            >
-                                <div class="flex items-center justify-between">
-                                    <button @click="open = !open" class="flex-1 text-left group">
-                                        <div class="flex items-baseline justify-between">
-                                            <div class="flex items-baseline">
-                                                <h3 class="text-lg font-medium text-[#FFFFFF] group-hover:text-[#3C3B6E] transition-colors">
-                                                    {{ $item['keyword'] }}
-                                                </h3>
-                                                <span class="ml-2 text-sm text-[#FFFFFF]">{{ $item['pronunciation'] }}</span>
-                                            </div>
-                                            {{-- Icon Dropdown --}}
-                                            <svg class="w-5 h-5 text-[#6B7280] transform transition-transform duration-200"
-                                                :class="{ 'rotate-180': open }"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                                            </svg>
-                                        </div>
-                                    </button>
-
-                                    {{-- Delete Button --}}
-                                    <form method="POST" action="{{ route('history.delete', $item['id']) }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button
-                                            type="submit"
-                                            class="ml-4 p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors"
-                                            onclick="return confirm('Yakin ingin menghapus riwayat ini?')"
-                                        >
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
-                                        </button>
-                                    </form>
-                                </div>
-
-                                {{-- Dropdown Content --}}
-                                <div x-show="open" x-collapse class="mt-2 pl-2">
-                                    @if(!empty($item['sub_items']))
-                                        <ul class="space-y-4">
-                                            @foreach($item['sub_items'] as $sub)
-                                                <li class="pl-4">
-                                                    <div class="flex items-baseline">
-                                                        <h4 class="font-medium text-[#1F2937]">{{ $sub['keyword'] }}</h4>
-                                                        <span class="ml-2 text-sm text-[#6B7280]">{{ $sub['pronunciation'] }}</span>
-                                                    </div>
-                                                    <div class="mt-1 bg-[#F9F5EA] border border-[#E5E7EB] rounded-md p-3 text-[#4B5563]">
-                                                        {{ $sub['definition'] }}
-                                                      </div>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    @else
-                                    <div class="bg-[#F9F5EA] border border-[#E5E7EB] rounded-md p-3 text-[#4B5563]">
-                                        {{ $item['definition'] }}
-                                      </div>
-
-                                    @endif
-                                </div>
-
-                                @if(!$loop->last)
-                                    <hr class="my-4 border-[#E5E7EB]">
-                                @endif
-                            </div>
-                        @endforeach
-                    </div>
-                @endforeach
-            </div>
-        @endif
+        </form>
     @endif
 </div>
 @endsection

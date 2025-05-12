@@ -9,14 +9,15 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('kamus', function (Blueprint $table) {
-            $table->increments('id'); // atau istilah_id
-            $table->string('istilah', 150);
-            $table->string('cara_baca', 150);
-            $table->text('penjelasan');
-            $table->string('kategori', 50);
-        });
-        
+        if (!Schema::hasTable('kamus')) {
+            Schema::create('kamus', function (Blueprint $table) {
+                $table->increments('id'); // atau istilah_id
+                $table->string('istilah', 150);
+                $table->string('cara_baca', 150);
+                $table->text('penjelasan');
+                $table->string('kategori', 50);
+            });
+        }
     }
 
     /**

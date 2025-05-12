@@ -11,38 +11,37 @@ use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\KamusController;
-use App\Http\Controllers\CategoryController; // ✅ gunakan nama baru
-
-// ==========================
-// Halaman Home
-// ==========================
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeController;
 
+// ==========================//
+// Halaman Home
+// ==========================//
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// ==========================
+// ==========================//
 // Halaman Kategori
-// ==========================
+// ==========================//
 Route::get('/kategori/umum', [CategoryController::class, 'umum'])->name('kategori-umum');
 Route::get('/kategori/dips', [CategoryController::class, 'dips'])->name('kategori-dips');
 
-// ==========================
+// ==========================//
 // Search
-// ==========================
+// ==========================//
 Route::get('/search', [HomeController::class, 'search'])->name('search');
 
-// ==========================
+// ==========================//
 // Autentikasi
-// ==========================
+// ==========================//
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-// ==========================
+// ==========================//
 // Verifikasi Email
-// ==========================
+// ==========================//
 Route::get('/email/verify', function () {
     return view('auth.verify-email');
 })->middleware('auth')->name('verification.notice');
@@ -57,14 +56,16 @@ Route::post('/email/verification-notification', function (Request $request) {
     return back()->with('message', 'Link verifikasi telah dikirim!');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
-// ==========================
+// ==========================//
 // Fitur yang butuh login & verifikasi
-// ==========================
+// ==========================//
 Route::middleware(['auth', 'verified'])->group(function () {
+    // Profil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Ganti password
     Route::put('/password', function (Request $request) {
         $request->validate([
             'current_password' => ['required', 'current_password'],
@@ -77,21 +78,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return back()->with('status', 'Password berhasil diperbarui!');
     })->name('password.update');
 
+    // Riwayat pencarian
     Route::get('/history', [HistoryController::class, 'index'])->name('history');
     Route::delete('/history', [HistoryController::class, 'clearAll'])->name('history.delete-all');
     Route::delete('/history/{id}', [HistoryController::class, 'destroy'])->name('history.delete');
 
+    // Bookmark
     Route::get('/bookmark', [BookmarkController::class, 'index'])->name('bookmark');
+    Route::post('/bookmark', [BookmarkController::class, 'store'])->name('bookmark.store');
+    Route::delete('/bookmark/delete-all', [BookmarkController::class, 'deleteAll'])->name('bookmark.delete-all');
 });
 
-// ==========================
+// ==========================//
 // Kamus
-// ==========================
-Route::resource('kamus', KamusController::class);  // Pastikan ini sesuai kebutuhanmu
+// ==========================//
+Route::resource('kamus', KamusController::class);
 
-// ==========================
+// ==========================//
 // Halaman Testing UI — Opsional
-// ==========================
+// ==========================//
 Route::get('/test-kategori-umum-ui', fn() => view('kategori-umum'));
 Route::get('/test-kategori-dips-ui', fn() => view('kategori-dips'));
 

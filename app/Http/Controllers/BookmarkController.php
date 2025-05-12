@@ -3,51 +3,36 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Bookmark;
+use Illuminate\Support\Facades\Auth;
 
 class BookmarkController extends Controller
 {
     public function index()
     {
-        return view('bookmark');
+        $bookmarks = Bookmark::where('user_id', Auth::id())->get();
+        return view('bookmark', compact('bookmarks'));
     }
 
-    public function showBookmarks()
+    public function store(Request $request)
     {
-        // Data dummy sementara
-        $dummyBookmark = [
+        Bookmark::updateOrCreate(
             [
-                'items' => [
-                    [
-                        'id' => 1,
-                        'keyword' => 'Dipyo',
-                        'pronunciation' => '/dip-yo/',
-                        'definition' => 'Bis Universitas Diponegoro yang disediakan oleh kampus untuk mahasiswa.',
-                        'is_bookmarked' => false,
-                        'sub_items' => []
-                    ],
-                    [
-                        'id' => 2,
-                        'keyword' => 'IPS',
-                        'pronunciation' => '/i-pe-es/',
-                        'definition' => 'Tingkat keberhasilan mahasiswa...',
-                        'is_bookmarked' => true,
-                        'sub_items' => []
-                    ],
-                    [
-                        'id' => 3,
-                        'keyword' => 'KTM',
-                        'pronunciation' => '/ka-te-em/',
-                        'definition' => 'Kegiatan kurikuler di masyarakat',
-                        'is_bookmarked' => false,
-                        'sub_items' => []
-                    ]
-                ]
+                'user_id' => Auth::id(),
+                'istilah' => $request->istilah
+            ],
+            [
+                'cara_baca' => $request->cara_baca,
+                'penjelasan' => $request->penjelasan
             ]
-        ];
+        );
 
-        // Passing dummyBookmark ke view
-        return view('bookmark', ['dummyBookmark' => $dummyBookmark]);
+        return back()->with('success', 'Bookmark berhasil disimpan!');
     }
 
+    public function deleteAll()
+    {
+        Bookmark::where('user_id', Auth::id())->delete();
+        return redirect()->back()->with('success', 'Semua bookmark dihapus.');
+    }
 }
-
