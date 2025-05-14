@@ -1,4 +1,3 @@
-// ✅ WAJIB ADA: Import bootstrap.js agar axios tersedia
 import './bootstrap';
 import '../css/app.css';
 import Alpine from 'alpinejs';
@@ -33,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops!',
-                    text: 'Gagal menyimpan bookmark.',
+                    text: 'Gagal menyimpan bookmark. Anda harus login!',
                     confirmButtonColor: '#3C3B6E'
                 });
             });
