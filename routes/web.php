@@ -48,11 +48,13 @@ Route::get('/email/verify', function () {
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
+
     return redirect()->route('home');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
 Route::post('/email/verification-notification', function (Request $request) {
     $request->user()->sendEmailVerificationNotification();
+
     return back()->with('message', 'Link verifikasi telah dikirim!');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
@@ -86,7 +88,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Bookmark
     Route::get('/bookmark', [BookmarkController::class, 'index'])->name('bookmark');
     Route::post('/bookmark', [BookmarkController::class, 'store'])->name('bookmark.store');
+    Route::post('/bookmark/toggle', [BookmarkController::class, 'toggle'])->name('bookmark.toggle'); // Toggle bookmark via AJAX
     Route::delete('/bookmark/delete-all', [BookmarkController::class, 'deleteAll'])->name('bookmark.delete-all');
+    Route::delete('/bookmark/{id}', [BookmarkController::class, 'destroy'])->name('bookmark.delete');
 });
 
 // ==========================//
@@ -99,4 +103,3 @@ Route::resource('kamus', KamusController::class);
 // ==========================//
 Route::get('/test-kategori-umum-ui', fn() => view('kategori-umum'));
 Route::get('/test-kategori-dips-ui', fn() => view('kategori-dips'));
-

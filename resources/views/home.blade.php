@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -28,7 +27,7 @@
     <!-- Main Content -->
     <div class="flex flex-col items-center justify-center min-h-screen pt-24 p-4">
         <div class="bg-[#C3B58E] text-center p-6 rounded-xl max-w-3xl mb-6">
-            <img src="{{ asset('images/logo.png') }}" class="w-[522.7px] h-[142px] mb-6 mx-auto">
+            <img src="{{ asset('images/logo.png') }}" class="w-[522.7px] h-[142px] mb-6 mx-auto" alt="Logo Dipsionary">
             <p class="text-[17px] text-[#535049]">
                 Website Dipsionary merupakan Kamus Daring yang dibuat untuk memudahkan pencarian, penggunaan, dan pembacaan arti kata dalam dunia perkuliahan di Universitas Diponegoro. Kami juga menyediakan fitur markah dan riwayat pencarian.
             </p>
@@ -61,12 +60,9 @@
                 title: 'Login Dulu!',
                 text: 'Fitur ini hanya bisa digunakan jika kamu sudah login.',
                 icon: 'warning',
-                confirmButtonText: 'Login Sekarang',
-                confirmButtonColor: '#3C3B6E'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = "{{ route('login') }}";
-                }
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
             });
         }
     </script>

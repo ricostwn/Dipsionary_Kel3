@@ -10,22 +10,28 @@ class HistoryController extends Controller
 {
     public function index()
     {
-        $histories = History::where('user_id', Auth::id())->orderBy('created_at', 'desc')->get();
+        $histories = History::where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         return view('history', compact('histories'));
     }
 
     public function destroy($id)
     {
         $history = History::find($id);
+
         if ($history && $history->user_id == Auth::id()) {
             $history->delete();
+            return back()->with('success', 'Riwayat berhasil dihapus.');
         }
-        return back();
+
+        return back()->with('error', 'Gagal menghapus riwayat.');
     }
 
     public function clearAll()
     {
         History::where('user_id', Auth::id())->delete();
-        return back();
+        return back()->with('success', 'Semua riwayat berhasil dihapus.');
     }
 }

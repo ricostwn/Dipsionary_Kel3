@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Kamus;
 use App\Models\History;
+use App\Models\Bookmark;  // Tambahkan import model Bookmark
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
@@ -14,37 +15,31 @@ class HomeController extends Controller
         return view('home');
     }
 
-    public function kategoriUmum()
-    {
-        $items = Kamus::where('kategori', 'umum')->get();
-        return view('kategori-umum', compact('items'));
-    }
-
-    public function kategoriDips()
-    {
-        $items = Kamus::where('kategori', 'dips')->get();
-        return view('kategori-dips', compact('items'));
-    }
-
     public function search(Request $request)
     {
         $keyword = $request->input('q');
-        $results = Kamus::where('istilah', 'LIKE', "%{$keyword}%")
-            ->orWhere('cara_baca', 'LIKE', "%{$keyword}%")
-            ->orWhere('penjelasan', 'LIKE', "%{$keyword}%")
-            ->get();
 
-        // Simpan riwayat pencarian jika user login
-        if (Auth::check() && !$results->isEmpty()) {
+        // Pencarian hanya di kolom 'istilah'
+        $results = Kamus::where('istilah', 'LIKE', "%{$keyword}%")->get();
+
+        // Simpan riwayat pencarian meskipun hasil kosong, jika user sudah login
+        if (Auth::check()) {
             History::create([
                 'user_id' => Auth::id(),
                 'keyword' => $keyword
             ]);
         }
 
+        // Ambil data bookmark user jika sudah login, kosong jika belum login
+        $bookmarks = collect();
+        if (Auth::check()) {
+            $bookmarks = Bookmark::where('user_id', Auth::id())->get();
+        }
+
         return view('search', [
             'keyword' => $keyword,
-            'results' => $results
+            'results' => $results,
+            'bookmarks' => $bookmarks
         ]);
     }
 }

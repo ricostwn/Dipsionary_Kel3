@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
 
     <title>{{ config('app.name', 'Dipsionary') }}</title>
 
-    <!-- Tailwind & Alpine -->
+    <!-- Tailwind CSS & Alpine.js -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <!-- SweetAlert -->
+    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
 
     <!-- Fonts -->
     <style>
@@ -22,7 +23,7 @@
         }
     </style>
 
-    <!-- Custom Style -->
+    <!-- Custom Styles -->
     <style>
         .card {
             background: #f8f9fa;
@@ -32,7 +33,7 @@
         }
     </style>
 
-    <!-- Scripts -->
+    <!-- Vite Assets -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
@@ -62,14 +63,37 @@
                 title: 'Login Dulu!',
                 text: 'Fitur ini hanya bisa digunakan jika kamu sudah login.',
                 icon: 'warning',
-                confirmButtonText: 'Login Sekarang',
-                confirmButtonColor: '#3C3B6E'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = "{{ route('login') }}";
-                }
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
             });
         }
     </script>
+
+    <!-- Flash Message Alert -->
+    <script>
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: @json(session('success')),
+                showConfirmButton: false,
+                timer: 2000
+            });
+        @endif
+
+        @if(session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: @json(session('error')),
+                showConfirmButton: false,
+                timer: 2000
+            });
+        @endif
+    </script>
+
+    <!-- Additional scripts from child views -->
+    @stack('scripts')
 </body>
 </html>

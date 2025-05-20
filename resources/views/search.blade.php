@@ -1,71 +1,123 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto px-4 py-20 max-w-4xl">
-    <h1 class="text-2xl font-bold text-[#3C3B6E] mb-4">Hasil Pencarian untuk: "{{ $keyword }}"</h1>
+<div class="container mx-auto py-10 max-w-5xl pt-24">
+    <h1 class="text-3xl font-bold mb-6 text-[#3C3B6E]">Hasil Pencarian untuk: "{{ $keyword }}"</h1>
 
     @if($results->isEmpty())
         <p class="text-[#535049]">Tidak ditemukan hasil untuk pencarian tersebut.</p>
     @else
+        @php
+            // Ambil istilah bookmark user jika tersedia, fallback kosong jika tidak
+            $bookmarkedIstilah = isset($bookmarks) ? $bookmarks->pluck('istilah')->toArray() : [];
+        @endphp
         <ul class="space-y-4">
             @foreach($results as $item)
-                <li class="bg-[#C5B862] rounded-lg p-4">
-                    <div class="flex items-center justify-between">
-                        <!-- Grup Istilah & Cara Baca -->
+                @php
+                    $isBookmarked = in_array($item->istilah, $bookmarkedIstilah);
+                @endphp
+                <li class="bg-[#C5B862] p-6 rounded-lg flex justify-between items-start relative">
+                    <div>
                         <div class="flex items-baseline gap-2">
-                            <h2 class="text-xl font-semibold text-[#3C3B6E]">{{ $item->istilah }}</h2>
-                            <p class="italic text-[#535049]">({{ $item->cara_baca }})</p>
+                            <h2 class="text-xl font-bold text-[#3C3B6E]">{{ $item->istilah }}</h2>
+                            <span class="italic text-gray-800 text-base">({{ $item->cara_baca }})</span>
                         </div>
-
-                        <!-- Tombol Bookmark -->
-                        <button
-                            type="button"
-                            class="bookmark-button flex items-center justify-center h-10 w-10"
-                            data-istilah="{{ $item->istilah }}"
-                            data-cara_baca="{{ $item->cara_baca }}"
-                            data-penjelasan="{{ $item->penjelasan }}"
-                            data-bookmarked="{{ $item->is_bookmarked ? 'true' : 'false' }}"
-                        >
-                            <svg class="h-8 w-8 bookmark-icon" fill="{{ $item->is_bookmarked ? '#3C3B6E' : '#F9F5EA' }}" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
-                            </svg>
-                        </button>
+                        <p class="mt-2 text-gray-800 leading-relaxed">{{ $item->penjelasan }}</p>
                     </div>
 
-                    <!-- Penjelasan -->
-                    <p class="text-[#535049] mt-2">{{ $item->penjelasan }}</p>
+                    <!-- Bookmark Toggle Button -->
+                    <button
+                        type="button"
+                        class="bookmark-toggle ml-4"
+                        data-istilah="{{ $item->istilah }}"
+                        data-cara_baca="{{ $item->cara_baca }}"
+                        data-penjelasan="{{ $item->penjelasan }}"
+                        aria-label="Toggle bookmark"
+                        aria-pressed="{{ $isBookmarked ? 'true' : 'false' }}"
+                    >
+                        @if($isBookmarked)
+                            <!-- Ikon bookmark biru -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-700" fill="currentColor" viewBox="0 0 24 24" stroke="none">
+                                <path d="M6 2a2 2 0 00-2 2v18l8-5 8 5V4a2 2 0 00-2-2H6z"/>
+                            </svg>
+                        @else
+                            <!-- Ikon bookmark putih -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5v16l7-5 7 5V5a2 2 0 00-2-2H7a2 2 0 00-2 2z" />
+                            </svg>
+                        @endif
+                    </button>
                 </li>
             @endforeach
         </ul>
     @endif
 </div>
+@endsection
 
+@push('scripts')
 <script>
-document.querySelectorAll('.bookmark-button').forEach(button => {
-    button.addEventListener('click', function() {
-        const icon = this.querySelector('.bookmark-icon');
-        const isBookmarked = this.dataset.bookmarked === 'true';
+    document.querySelectorAll('.bookmark-toggle').forEach(button => {
+        button.addEventListener('click', function() {
+            const istilah = this.dataset.istilah;
+            const cara_baca = this.dataset.cara_baca;
+            const penjelasan = this.dataset.penjelasan;
+            const btn = this;
+            const isBookmarked = btn.getAttribute('aria-pressed') === 'true';
 
-        // Toggle state lokal
-        this.dataset.bookmarked = !isBookmarked;
-        icon.style.fill = isBookmarked ? '#F9F5EA' : '#3C3B6E';
-
-        // Kirim request ke backend
-        fetch('/bookmark', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({
-                istilah: this.dataset.istilah,
-                cara_baca: this.dataset.cara_baca,
-                penjelasan: this.dataset.penjelasan,
-                is_bookmarked: !isBookmarked
+            fetch("{{ route('bookmark.toggle') }}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ istilah, cara_baca, penjelasan }),
             })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: data.message,
+                        timer: 1500,
+                        showConfirmButton: false,
+                    });
+
+                    // Toggle aria-pressed
+                    btn.setAttribute('aria-pressed', !isBookmarked);
+
+                    // Toggle ikon warna
+                    if(!isBookmarked) {
+                        btn.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-700" fill="currentColor" viewBox="0 0 24 24" stroke="none">
+                                <path d="M6 2a2 2 0 00-2 2v18l8-5 8 5V4a2 2 0 00-2-2H6z"/>
+                            </svg>`;
+                    } else {
+                        btn.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5v16l7-5 7 5V5a2 2 0 00-2-2H7a2 2 0 00-2 2z" />
+                            </svg>`;
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: data.message,
+                        timer: 1500,
+                        showConfirmButton: false,
+                    });
+                }
+            })
+            .catch(() => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Fitur ini hanya bisa digunakan jika kamu sudah login.',
+                    timer: 1500,
+                    showConfirmButton: false,
+                });
+            });
         });
     });
-});
 </script>
-@endsection
+@endpush

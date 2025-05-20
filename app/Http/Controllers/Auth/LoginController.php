@@ -17,13 +17,17 @@ class LoginController extends Controller
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
-    // Menampilkan form login
+    /**
+     * Menampilkan form login
+     */
     public function showLoginForm()
     {
         return view('auth.login');
     }
 
-    // Menangani proses login
+    /**
+     * Menangani proses login
+     */
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -33,7 +37,8 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended($this->redirectTo);
+            // Redirect langsung ke halaman home tanpa intended()
+            return redirect($this->redirectTo);
         }
 
         throw ValidationException::withMessages([
@@ -41,7 +46,9 @@ class LoginController extends Controller
         ]);
     }
 
-    // Logout
+    /**
+     * Logout user
+     */
     public function logout(Request $request)
     {
         Auth::logout();
@@ -51,7 +58,9 @@ class LoginController extends Controller
         return redirect('/');
     }
 
-    // Menampilkan form registrasi
+    /**
+     * Menampilkan form registrasi (kalau kamu pakai di sini)
+     */
     public function showRegistrationForm()
     {
         return view('auth.register');
