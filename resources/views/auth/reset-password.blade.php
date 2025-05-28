@@ -1,39 +1,75 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('password.store') }}">
-        @csrf
+<!DOCTYPE html>
+<html lang="id">
 
-        <!-- Password Reset Token -->
-        <input type="hidden" name="token" value="{{ $request->route('token') }}">
+<head>
+    <meta charset="UTF-8">
+    <title>Dipsionary - Reset Password</title>
+    @vite('resources/css/app.css')
+</head>
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+<body class="bg-[#f2ede3] min-h-screen flex items-center justify-center">
+
+    <div class="relative w-[950px] h-[600px] bg-cover bg-center"
+        style="background-image: url('{{ asset('images/book_frame.png') }}')">
+
+        <!-- Logo di sisi kiri -->
+        <div class="absolute top-[40%] left-[5%] text-white text-center z-10">
+            <img src="{{ asset('images/logo_dipsionary.png') }}" alt="Logo Dipsionary" class="h-20 mx-auto mb-2">
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        <!-- Form Reset Password di sisi kanan -->
+        <div class="absolute top-[15%] right-[5%] z-10 w-[300px]">
+
+            @if (session('status'))
+                <div class="mb-2 text-green-500 text-sm">
+                    {{ session('status') }}
+                </div>
+            @endif
+
+            <div class="bg-[#d9d9d9] rounded-xl px-6 py-5">
+                <form id="reset-password" method="POST" action="{{ route('password.update') }}">
+                    @csrf
+                    <input type="hidden" name="token" value="{{ $token }}">
+                    <input type="hidden" name="email" value="{{ $email }}">
+
+                    <!-- Input Password Baru -->
+                    <div class="mb-3">
+                        <label for="password" class="block text-sm text-black mt-4">Password Baru</label>
+                        <input id="password" type="password" name="password" required
+                            class="w-full text-sm text-black border-0 border-b-2 border-[#5a5a5a] bg-transparent focus:ring-0 focus:outline-none">
+                        @error('password')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Input Konfirmasi Password -->
+                    <div class="mb-3">
+                        <label for="password_confirmation" class="block text-sm text-black mt-4">Konfirmasi Password</label>
+                        <input id="password_confirmation" type="password" name="password_confirmation" required
+                            class="w-full text-sm text-black border-0 border-b-2 border-[#5a5a5a] bg-transparent focus:ring-0 focus:outline-none">
+                        @error('password_confirmation')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tombol Atur Ulang Password -->
+            <button type="submit" form="reset-password"
+                class="w-full bg-[#d2c291] hover:bg-[#C3b58e] text-black py-2 rounded-full mt-6">
+                Atur Ulang Password
+            </button>
+
+            <!-- Link Kembali ke Login/Register -->
+            <div class="text-xs text-center text-white mt-4">
+                <span>Kembali ke </span>
+                <a href="{{ route('login') }}" class="underline text-blue-200">Login</a> atau 
+                <a href="{{ route('register') }}" class="underline text-blue-200">Register</a>
+            </div>
+
         </div>
+    </div>
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+</body>
 
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                                type="password"
-                                name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Reset Password') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+</html>

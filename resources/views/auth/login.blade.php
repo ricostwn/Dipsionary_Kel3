@@ -58,9 +58,14 @@
                 Masuk
             </button>
 
-            <!-- Link untuk "Belum punya akun?" yang berada tepat di bawah tombol Masuk -->
-            <div class="text-xs text-center text-white mt-4">
-                Belum punya akun? <a href="{{ route('register') }}" class="underline text-blue-200">Daftar di sini</a>
+            <!-- Link untuk "Belum punya akun?" dan "Lupa password?" tepat di bawah tombol Masuk -->
+            <div class="text-xs text-center text-white mt-4 space-y-1">
+                <div>
+                    Belum punya akun? <a href="{{ route('register') }}" class="underline text-blue-200">Daftar di sini</a>
+                </div>
+                <div>
+                    <a href="{{ route('password.request') }}" class="underline text-blue-200">Lupa password?</a>
+                </div>
             </div>
 
         </div>

@@ -10,6 +10,8 @@ use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\KamusController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeController;
@@ -40,6 +42,30 @@ Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // ==========================//
+// Reset Password (Forgot Password)
+// ==========================//
+
+// Menampilkan form permintaan reset password (input email)
+Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])
+    ->middleware('guest')
+    ->name('password.request');
+
+// Proses pengiriman link reset password ke email user
+Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
+    ->middleware('guest')
+    ->name('password.email');
+
+// Menampilkan form reset password (input password baru) dengan token valid
+Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])
+    ->middleware('guest')
+    ->name('password.reset');
+
+// Proses update password baru setelah submit (reset password via email)
+Route::post('/reset-password', [NewPasswordController::class, 'store'])
+    ->middleware('guest')
+    ->name('password.update');
+
+// ==========================//
 // Verifikasi Email
 // ==========================//
 Route::get('/email/verify', function () {
@@ -62,12 +88,13 @@ Route::post('/email/verification-notification', function (Request $request) {
 // Fitur yang butuh login & verifikasi
 // ==========================//
 Route::middleware(['auth', 'verified'])->group(function () {
+    
     // Profil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Ganti password
+    // Ganti password saat user sudah login
     Route::put('/password', function (Request $request) {
         $request->validate([
             'current_password' => ['required', 'current_password'],
@@ -78,7 +105,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         $user->update(['password' => Hash::make($request->password)]);
 
         return back()->with('status', 'Password berhasil diperbarui!');
-    })->name('password.update');
+    })->name('password.change'); // Nama route diganti dari password.update ke password.change
 
     // Riwayat pencarian
     Route::get('/history', [HistoryController::class, 'index'])->name('history');
